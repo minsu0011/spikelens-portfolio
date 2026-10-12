@@ -40,13 +40,13 @@ jobs:
           POSTGRES_DB: spikelens_test
         ports: ['5432:5432']
         options: >-
-          --health-cmd='pg_isready -U spikelens -d spikelens_test'
+          --health-cmd="pg_isready -U spikelens -d spikelens_test"
           --health-interval=5s --health-timeout=5s --health-retries=20
       redis:
         image: redis:7.4-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
         ports: ['6379:6379']
         options: >-
-          --health-cmd='redis-cli ping'
+          --health-cmd="redis-cli ping"
           --health-interval=5s --health-timeout=5s --health-retries=20
     env:
       CI: 'true'

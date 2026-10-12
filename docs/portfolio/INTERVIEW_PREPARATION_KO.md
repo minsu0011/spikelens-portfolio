@@ -15,7 +15,7 @@
 | SSE와 WebSocket | 단방향 상태 전달에 SSE 사용, 연결 실패는 실제 polling으로 복구 |
 | 인덱스 | 종목/세션/시간과 owner 인덱스, 임시 합성 테이블의 EXPLAIN 비교 |
 | Docker 통신 | Compose DNS와 내부 포트, loopback published port, 독립 네트워크/볼륨 |
-| GitHub Actions | safety/backend/frontend/Docker-E2E 4개 job. 원격 실행 결과는 게시 후 별도 확인해야 한다. |
+| GitHub Actions | safety/backend/frontend/Docker-E2E 4개 job. 실제 공개 저장소의 commit별 Actions 결과를 확인한다. service healthcheck 인자 해석 오류도 원격 로그로 확인하고 수정했다. |
 | 실제 장애와 한계 | `PUBLIC_RUNTIME_QA.json`의 실제 Redis/worker/DB 중단, 제한된 게시와 outbox 복구. 운영을 수행했다고 과장하지 않는다. |
 
 공개 provider는 `providers/base.py`/`demo.py`의 데이터 품질 계약과 fixture만 설명한다. 비공개 모델 내부 구현은 설명 자료에 포함하지 않는다.

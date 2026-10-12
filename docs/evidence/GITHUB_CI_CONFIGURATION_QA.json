@@ -15,5 +15,5 @@
     "Five guard regression tests"
   ],
   "local_equivalent_application_tests": "PASS",
-  "actual_remote_GitHub_Actions": "NOT_RUN"
+  "actual_remote_GitHub_Actions": "This is the pre-publication configuration audit; actual subsequent runs are available in the repository Actions tab."
 }

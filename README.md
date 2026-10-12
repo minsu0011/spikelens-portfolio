@@ -1,5 +1,7 @@
 # SpikeLens — Full-stack Event Processing Portfolio
 
+[![Public release CI](https://github.com/minsu0011/spikelens-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/minsu0011/spikelens-portfolio/actions/workflows/ci.yml)
+
 금융 이벤트의 조회·CSV 업로드·비동기 처리·시각화를 구현한 백엔드 중심 풀스택 포트폴리오다. 공개 버전은 **Synthetic Demo Mode**이며, 예측 모델·분석 알고리즘·학습 코드·가중치는 포함하지 않는다.
 
 `DemoAnalysisProvider`는 검증된 행과 가격 관측값의 개수 등 일반적인 데이터 품질 정보를 기록한다. 화면의 **DEMO/FIXTURE** 값은 공개된 합성 상수이며 종목·가격·거래량으로 예측하지 않는다. CSV 업로드, DB 저장, Redis 메시징, Celery 처리, 작업 진행률과 결과 조회는 실제로 수행한다.
@@ -41,6 +43,8 @@ Docker Engine와 Compose가 필요하다. Windows에서는 Docker Desktop의 Lin
 Windows PowerShell에서 프로젝트 루트로 이동한 뒤 실행한다.
 
 ```powershell
+git clone https://github.com/minsu0011/spikelens-portfolio.git
+cd spikelens-portfolio
 python scripts/init_env.py
 docker compose up --build -d --wait --wait-timeout 240
 docker compose exec -T backend python -m app.db.seed --count 10000
@@ -51,6 +55,8 @@ Python이 호스트에 없으면 `.env.example`을 `.env`로 복사하고 `repla
 Linux:
 
 ```bash
+git clone https://github.com/minsu0011/spikelens-portfolio.git
+cd spikelens-portfolio
 python3 scripts/init_env.py
 docker compose up --build -d --wait --wait-timeout 240
 docker compose exec -T backend python -m app.db.seed --count 10000
@@ -72,9 +78,11 @@ docker compose stop
 
 ## 테스트와 실행 증거
 
-공개본은 원본 개발 환경의 검증을 그대로 가져오지 않고 다시 실행했다. 최신 실행 증거는 [PUBLIC_TEST_RESULTS.json](docs/evidence/PUBLIC_TEST_RESULTS.json), [PUBLIC_RUNTIME_QA.json](docs/evidence/PUBLIC_RUNTIME_QA.json)에 기록한다. GitHub Actions 원격 실행과 클라우드 배포는 아직 수행하지 않았다.
+공개본은 원본 개발 환경의 검증을 그대로 가져오지 않고 다시 실행했다. 공개 준비 시점의 로컬 증거는 [PUBLIC_TEST_RESULTS.json](docs/evidence/PUBLIC_TEST_RESULTS.json), [PUBLIC_RUNTIME_QA.json](docs/evidence/PUBLIC_RUNTIME_QA.json)에 기록한다. 게시 후 실제 GitHub Actions 실행 결과는 [원격 CI 기록](https://github.com/minsu0011/spikelens-portfolio/actions/workflows/ci.yml)과 위 badge에서 확인한다. Cloud 배포는 수행하지 않았다.
 
 최신 공개본 검증: **pytest 44개(단위 26 + 통합 18), 실제 브라우저 4개, 공개 guard 5개 통과**. 실패·skip 0이며 Ruff·TypeScript·ESLint·production build도 통과했다. 실제 공개본 Redis·worker·PostgreSQL 중단과 복구를 별도로 검증했다.
+
+첫 원격 CI에서 service healthcheck의 single quote가 Docker 인자로 잘못 분리되는 문제를 발견했다. 실제 runner 로그의 `unknown shorthand flag: 'U'`를 확인하고 두 service 옵션을 double quote로 수정했다. 수정 전후의 원격 실행 이력을 숨기지 않고 보존한다.
 
 ```bash
 # Docker가 실행 중인 프로젝트 루트에서 전용 test DB/Redis DB 2 검사

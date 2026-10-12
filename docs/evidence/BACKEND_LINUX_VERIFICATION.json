@@ -1,0 +1,211 @@
+{
+  "timestamp_utc": "2026-10-12T19:21:32.784068+00:00",
+  "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+  "python": "3.12.15 (main, Oct  6 2026, 02:02:22) [GCC 14.2.0]",
+  "uid": 10001,
+  "versions": {
+    "fastapi": "0.143.0",
+    "pydantic": "2.14.1",
+    "SQLAlchemy": "2.1.4",
+    "psycopg": "3.3.6",
+    "celery": "5.6.3",
+    "redis": "6.4.0",
+    "alembic": "1.20.0",
+    "argon2-cffi": "25.1.0",
+    "pytest": "8.4.2",
+    "ruff": "0.17.0",
+    "starlette": "1.7.0",
+    "httpx": "0.28.1"
+  },
+  "test_environment": {
+    "database": "spikelens_test",
+    "redis_database": 2,
+    "upload_dir": "/tmp/spikelens-final-tests/uploads",
+    "worker": "fixture-owned real Celery subprocess, pool solo",
+    "production_queue_and_upload_volume": "NOT_TOUCHED",
+    "lease_seconds": 10
+  },
+  "test_counts": {
+    "tests": 44,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "pytest_exit_code": 0,
+  "ruff_exit_code": 0,
+  "elapsed_seconds": 33.705,
+  "source_sha256": [
+    {
+      "path": "alembic/env.py",
+      "SHA256": "b614f4261a581624350eb2eff64c4f1190651705eef01bfe3aa6f5f0198988ff"
+    },
+    {
+      "path": "alembic/versions/0001_initial_schema.py",
+      "SHA256": "43da682a53965fbeca03c4bb17a0617a612e7edce018ff61ec505663cafb3d6e"
+    },
+    {
+      "path": "app/__init__.py",
+      "SHA256": "6d01d227dc7aa09a637cc5ee4208ec9545884560f3a06949801176d4487d7b64"
+    },
+    {
+      "path": "app/api/admin.py",
+      "SHA256": "35791b5ee85034f7decb511648bbf3c7bba5b342dc3c2ac4a8b8352515f36dee"
+    },
+    {
+      "path": "app/api/analytics.py",
+      "SHA256": "85add248c7db97bb3f72489ae3ccb1f965b556044a2129a57857cdbc11a3ec09"
+    },
+    {
+      "path": "app/api/auth.py",
+      "SHA256": "bc97658e8ea584db8518409652cf62de0334b4a4b5aac2e4c362b3c7f75608d1"
+    },
+    {
+      "path": "app/api/events.py",
+      "SHA256": "4566589e798fd97acb5f01bc254d37df77b404d30ab0f17ee92e578dfcff302e"
+    },
+    {
+      "path": "app/api/jobs.py",
+      "SHA256": "921440f216a77e17dd2036d1e1f4be7418513d4af60cc03279d300fca3274a7e"
+    },
+    {
+      "path": "app/api/uploads.py",
+      "SHA256": "1d1ba34dfb8994106593edf531d1b06b5f783c73dcff4b43af754b80830d43a8"
+    },
+    {
+      "path": "app/core/config.py",
+      "SHA256": "28cef8ffc6821e7fb0b5493fcec829965a10f17ed18d43d81668536fc4249878"
+    },
+    {
+      "path": "app/core/errors.py",
+      "SHA256": "9c6a5e0ffbd35c9d42110e8a141cddf506ec9c445fbf3d1fee075c11da8f6e62"
+    },
+    {
+      "path": "app/core/logging.py",
+      "SHA256": "0e2d1b22bfca418af765b2a09845aa2fa1df1e2123373c51fb6ae75c4cbaf7dc"
+    },
+    {
+      "path": "app/core/security.py",
+      "SHA256": "ab564e3c6ae2e4ffe127eb89ee2868becd1d8d4aab54402efb25c4be2179c7a4"
+    },
+    {
+      "path": "app/core/upload_limit.py",
+      "SHA256": "976ccb332ffdd37532e83355bec14175a6615dc9c356b3914cb1d77cd9dff512"
+    },
+    {
+      "path": "app/db/admin.py",
+      "SHA256": "1a0303f87ef68b256b5589cb9be7e392c110276745e5ac914955b4906d871090"
+    },
+    {
+      "path": "app/db/seed.py",
+      "SHA256": "6ecb0921b6f77b3b3a37751e23562ae2c0f1dff4c80188f1aca53105b7f6900e"
+    },
+    {
+      "path": "app/db/session.py",
+      "SHA256": "f19c40ca60b6f92e1949aa22b7c9e18bfb5c01076af8b569a9d0abd605c371e4"
+    },
+    {
+      "path": "app/main.py",
+      "SHA256": "c56167d45ea3727abbc78b2d68908df90951461c77ba89fae53c2c61d3d30377"
+    },
+    {
+      "path": "app/models/__init__.py",
+      "SHA256": "b9d2d989b3793015216de6f2467c253ed4c296a59cd28e4bd6dbfdb21d941a43"
+    },
+    {
+      "path": "app/models/entities.py",
+      "SHA256": "55c79ff060d653b0fa66f2d26a7d62816bba40b7db4e9939474fbd16a91b8d10"
+    },
+    {
+      "path": "app/providers/__init__.py",
+      "SHA256": "a572abf4db5dd115d1aab068a3e3f84921b2847d213947aaac09297411e2e6f0"
+    },
+    {
+      "path": "app/providers/base.py",
+      "SHA256": "87398eae8cdca43fbcfd12f25af97077f0bb68bf2c46c069f58073b7021d8125"
+    },
+    {
+      "path": "app/providers/demo.py",
+      "SHA256": "cfd704c0753202fa227e31bd29368d39ddabf5ac6827582cc49f0ba92acec18e"
+    },
+    {
+      "path": "app/repositories/events.py",
+      "SHA256": "f5b4e1f860739937cbdddf52c171d2cd626439d40c1c802c6fc8461dac7c5875"
+    },
+    {
+      "path": "app/schemas/auth.py",
+      "SHA256": "0af295f61e9458ab2f84cfd385f956692c7e0a7b5e1c12f1b94c8540c3a89b43"
+    },
+    {
+      "path": "app/schemas/events.py",
+      "SHA256": "faa69370b2cde9debc19cd13e6536d667c37322ed0c774af95ef709a40ae19f7"
+    },
+    {
+      "path": "app/schemas/jobs.py",
+      "SHA256": "c9d0b72daa6d534760d0f9c4506d975c1a27f0a5cb5649d4eccdbdeea7d9f7d4"
+    },
+    {
+      "path": "app/services/cache.py",
+      "SHA256": "eb987029293dfb2ec0725273af366c84327943ba3a3dbf4f9d0e0b282ce67b55"
+    },
+    {
+      "path": "app/services/csv_validation.py",
+      "SHA256": "4164e50f81d10a1eb911685deb801f6b850620ac7fba9e619325da7de2ef0279"
+    },
+    {
+      "path": "app/services/jobs.py",
+      "SHA256": "bb57491c713e845cd5bf6b2649830bde8fea7bc5cb24e7a286519419549aa1d4"
+    },
+    {
+      "path": "app/services/storage.py",
+      "SHA256": "8919d7bf00782cd351ccdb0db4e34e565117f28fbe6c408dfe54b8822fda32a3"
+    },
+    {
+      "path": "app/tasks/analysis.py",
+      "SHA256": "ab8c493ac2070af89fc700ac8cad51fe337a575ea37e18f10d649852f2b31239"
+    },
+    {
+      "path": "app/tasks/celery_app.py",
+      "SHA256": "5506d9e8536f609ad2e349a9acfe56e38161bbfe30bddb46d3d57333f6608e21"
+    },
+    {
+      "path": "tests/__init__.py",
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/conftest.py",
+      "SHA256": "10c8592d7f6d3ea2f2bdfe76a3ca51a40e7d9c10de511213689953ee89fdb8b0"
+    },
+    {
+      "path": "tests/test_demo_provider.py",
+      "SHA256": "102b27e2d34de5db557ed9d706c367aa4b0e2847496d2bafd1bd650d35f327fa"
+    },
+    {
+      "path": "tests/test_integration.py",
+      "SHA256": "3b1291c9507b5223a3e31dbe2571ff0292c24f54318073ea4eb68b7647f29c8c"
+    },
+    {
+      "path": "tests/test_publisher_integration.py",
+      "SHA256": "8db0813c6972d64c05f10ca642d8bbd6cedd838298d2471ae133e52d92fa8906"
+    },
+    {
+      "path": "tests/test_unit.py",
+      "SHA256": "7b2662bf091b4ce584ffae6e9101c10a36853e1980403c195a3b0a178e34336c"
+    }
+  ],
+  "junit_sha256": "b09f50387909724451ac193d1dfffd6edf3705d36da513646908e96a0465830a",
+  "actual_publisher_refusal_latency": {
+    "fault": "actual local TCP connection refusal, no send_task mock",
+    "api_create_seconds": 0.011108541000794503,
+    "dispatch_seconds": [
+      0.011108541000794503,
+      0.002425649001452257,
+      0.0023486530008085538,
+      0.00205947699942044,
+      0.0021144620004633907
+    ],
+    "api_retry_seconds": 0.00824711300083436,
+    "asserted_each_less_than_seconds": 5,
+    "dispatch_exhaustion": 5,
+    "worker_startup_retry_unchanged": true
+  }
+}

@@ -1,0 +1,32 @@
+"use client";
+
+import { CheckCircle2, Download, FileUp, LoaderCircle, Play, UploadCloud } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { api } from "@/lib/api";
+import type { Job, Page, Upload } from "@/lib/types";
+import { datetime, number, shortId } from "@/lib/format";
+import { useAuth } from "@/components/providers";
+import { AuthGate, Empty, ErrorState, Loading, PageTitle, Pagination, Status } from "@/components/ui";
+
+export default function UploadPage() {
+  const { user } = useAuth();
+  const [file, setFile] = useState<File | null>(null);
+  const [upload, setUpload] = useState<Upload | null>(null);
+  const [page, setPage] = useState(1);
+  const [fileError, setFileError] = useState("");
+  const keys = useRef(new Map<string, string>());
+  const client = useQueryClient();
+  const router = useRouter();
+  const uploads = useQuery({ queryKey: ["uploads", page, user?.id], queryFn: () => api<Page<Upload>>(`/uploads?page=${page}&limit=10`), enabled: !!user });
+  const send = useMutation({ mutationFn: async () => { if (!file) throw new Error("CSV 파일을 선택하세요."); const form = new FormData(); form.append("file", file); return api<Upload>("/uploads", { method: "POST", body: form }); }, onSuccess: (value) => { setUpload(value); void client.invalidateQueries({ queryKey: ["uploads"] }); } });
+  const analyze = useMutation({ mutationFn: async (value: Upload) => { if (!keys.current.has(value.id)) keys.current.set(value.id, crypto.randomUUID()); return api<Job>("/analyses", { method: "POST", headers: { "Idempotency-Key": keys.current.get(value.id)! }, body: JSON.stringify({ upload_id: value.id }) }); }, onSuccess: (job) => { void client.invalidateQueries({ queryKey: ["jobs"] }); router.push(`/jobs/${job.id}`); } });
+  function selectFile(value: File | null) {
+    setUpload(null); send.reset(); analyze.reset(); setFileError("");
+    if (value && !value.name.toLowerCase().endsWith(".csv")) { setFileError(".csv 확장자의 파일을 선택하세요."); setFile(null); return; }
+    if (value && value.size > 10 * 1024 * 1024) { setFileError("파일은 10 MiB 이하여야 합니다."); setFile(null); return; }
+    setFile(value);
+  }
+  return <><PageTitle eyebrow="FROM FILE TO INSIGHT" title="Upload & analyze" description="CSV를 검증하고 백그라운드 워커에 데모 분석을 요청하세요." /><AuthGate><div className="upload-layout"><section className="panel"><div className="panel-heading"><div><h2>Upload a dataset</h2><p>파일 검증과 분석 작업은 별도로 진행됩니다.</p></div><FileUp size={19} /></div><form className="upload-form" onSubmit={(event) => { event.preventDefault(); send.mutate(); }}><label className="upload-drop" onDragOver={(e) => { e.preventDefault(); }} onDrop={(e) => { e.preventDefault(); selectFile(e.dataTransfer.files[0] ?? null); }}><UploadCloud size={31} /><strong>{file ? file.name : "CSV 파일을 선택하거나 여기로 끌어오세요"}</strong><span>{file ? `${number(file.size / 1024, 1)} KiB · 준비됨` : "최대 10 MiB · UTF-8 CSV · 헤더 필수"}</span><input aria-label="CSV file" type="file" accept=".csv,text/csv" onChange={(e) => selectFile(e.target.files?.[0] ?? null)} /></label><div className="upload-actions"><p>파일과 분석 결과는 내 계정에서만 볼 수 있습니다.</p><button className="button primary" type="submit" disabled={!file || send.isPending}>{send.isPending ? <LoaderCircle className="spin" size={15} /> : <FileUp size={15} />}파일 검증 및 업로드</button></div></form>{(fileError || send.error || analyze.error) && <div className="inline-error" role="alert" style={{ margin: "0 22px 20px" }}>{fileError || send.error?.message || analyze.error?.message}</div>}{upload && <div className="upload-ready" style={{ margin: "0 22px 22px" }}><h3><CheckCircle2 size={16} />업로드 검증 결과 · {upload.status}</h3><p>{number(upload.row_count)}개 행 · {upload.original_filename}</p><div className="mono">SHA256 {upload.sha256}</div>{upload.validation_errors?.length > 0 ? <div className="inline-error" role="alert"><strong>파일의 오류를 수정해 다시 업로드하세요.</strong><pre style={{ whiteSpace: "pre-wrap", fontSize: 10, marginTop: 10 }}>{JSON.stringify(upload.validation_errors, null, 2)}</pre></div> : <button className="button primary" onClick={() => analyze.mutate(upload)} disabled={analyze.isPending}>{analyze.isPending ? <LoaderCircle className="spin" size={15} /> : <Play size={15} />}데모 분석 시작</button>}</div>}</section><section className="panel schema-panel"><div className="panel-heading"><div><h2>CSV schema</h2><p>표준 헤더와 UTC 시각을 사용하세요.</p></div></div><div className="schema-list"><div className="schema-item"><code>ticker</code><span>종목 코드 · 예: DEMOALPHA</span></div><div className="schema-item"><code>event_time</code><span>타임존 포함 ISO 8601<br />2025-01-15T14:35:00Z</span></div><div className="schema-item"><code>session</code><span>PREMARKET / RTH / AFTERHOURS</span></div><div className="schema-item"><code>p0_price / t5_price</code><span>0보다 큰 숫자</span></div><div className="schema-item"><code>volume</code><span>0 이상의 거래량</span></div><div className="schema-item"><code>price_path</code><span>세미콜론으로 구분한 가격<br />40;40.2;40.7;42</span></div></div><a className="button secondary wide" href="/sample-events.csv" download><Download size={15} />합성 예제 CSV 다운로드</a><p className="footnote">직접 만든 예제입니다. 실제 연구 데이터나 유료 원천을 포함하지 않습니다.</p></section></div><section className="panel uploads-panel"><div className="panel-heading"><div><h2>Your uploads</h2><p>최근 업로드와 서버의 검증 결과</p></div></div>{uploads.isPending ? <Loading /> : uploads.error ? <ErrorState error={uploads.error} retry={() => { void uploads.refetch(); }} /> : uploads.data && <>{uploads.data.items.length ? <div className="table-scroll"><table><thead><tr><th>FILE</th><th>ROWS</th><th>STATUS</th><th>UPLOADED · UTC</th><th>ACTION</th></tr></thead><tbody>{uploads.data.items.map((value) => <tr key={value.id}><td>{value.original_filename}<span className="cell-sub mono">{shortId(value.id)}</span></td><td>{number(value.row_count)}</td><td><Status value={value.status} /></td><td className="table-muted">{datetime(value.created_at)}</td><td>{!value.validation_errors?.length && <button className="button small secondary" disabled={analyze.isPending} onClick={() => analyze.mutate(value)}>분석 시작</button>}</td></tr>)}</tbody></table></div> : <Empty title="아직 업로드한 파일이 없습니다" description="합성 예제 CSV로 첫 분석을 시작해 보세요." />}<Pagination page={page} pages={uploads.data.pages} total={uploads.data.total} onPage={setPage} /></>}</section></AuthGate></>;
+}

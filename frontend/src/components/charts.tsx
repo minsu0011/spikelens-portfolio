@@ -1,0 +1,17 @@
+"use client";
+
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { sessionName } from "@/lib/format";
+
+const tooltipStyle = { background: "#151b25", border: "1px solid #2b3441", borderRadius: 10, color: "#edf2f8", fontSize: 12 };
+export function DailyChart({ data }: { data: { date: string; count: number }[] }) {
+  if (!data.length) return <p className="chart-empty">표시할 이벤트가 없습니다.</p>;
+  return <div className="chart-container" role="img" aria-label="날짜별 합성 이벤트 수 차트"><ResponsiveContainer width="100%" height="100%"><AreaChart data={data} margin={{ top: 12, right: 8, bottom: 4, left: -15 }}><defs><linearGradient id="dailyFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#eec275" stopOpacity={0.24} /><stop offset="100%" stopColor="#eec275" stopOpacity={0} /></linearGradient></defs><CartesianGrid vertical={false} stroke="#252d38" strokeDasharray="3 5" /><XAxis dataKey="date" tickFormatter={(v) => String(v).slice(5)} minTickGap={35} tick={{ fill: "#8b96a6", fontSize: 11 }} axisLine={false} tickLine={false} /><YAxis tick={{ fill: "#8b96a6", fontSize: 11 }} axisLine={false} tickLine={false} /><Tooltip contentStyle={tooltipStyle} labelStyle={{ color: "#edf2f8" }} /><Area type="monotone" dataKey="count" name="이벤트 수" stroke="#eec275" strokeWidth={2} fill="url(#dailyFill)" animationDuration={0} /></AreaChart></ResponsiveContainer></div>;
+}
+export function SessionChart({ data }: { data: { session: string; count: number }[] }) {
+  return <div className="session-chart" role="img" aria-label="세션별 합성 이벤트 수 차트"><ResponsiveContainer width="100%" height="100%"><BarChart data={data} layout="vertical" margin={{ left: 6, right: 25, top: 5, bottom: 0 }}><XAxis type="number" hide /><YAxis type="category" dataKey="session" tickFormatter={sessionName} width={93} tick={{ fill: "#9aa6b6", fontSize: 11 }} axisLine={false} tickLine={false} /><Tooltip contentStyle={tooltipStyle} labelFormatter={(value) => sessionName(String(value))} /><Bar dataKey="count" name="이벤트 수" fill="#7daca5" radius={[0, 4, 4, 0]} barSize={22} animationDuration={0} /></BarChart></ResponsiveContainer></div>;
+}
+export function PriceChart({ prices }: { prices: number[] }) {
+  const data = prices.map((price, index) => ({ point: index, price }));
+  return <div className="chart-container price-chart" role="img" aria-label="합성 가격 경로 차트"><ResponsiveContainer width="100%" height="100%"><AreaChart data={data} margin={{ top: 15, right: 10, bottom: 10, left: 5 }}><defs><linearGradient id="priceFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#8bd2bf" stopOpacity={0.25} /><stop offset="100%" stopColor="#8bd2bf" stopOpacity={0} /></linearGradient></defs><CartesianGrid stroke="#252d38" vertical={false} strokeDasharray="3 5" /><XAxis dataKey="point" tick={{ fill: "#8b96a6", fontSize: 11 }} axisLine={false} tickLine={false} label={{ value: "관측 순서 · 시간 간격은 제공되지 않음", position: "insideBottom", offset: -5, fill: "#8b96a6", fontSize: 11 }} /><YAxis domain={["auto", "auto"]} tick={{ fill: "#8b96a6", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(n) => `$${Number(n).toFixed(1)}`} /><Tooltip contentStyle={tooltipStyle} labelFormatter={(value) => `관측 ${value}`} formatter={(value) => [`$${Number(value).toFixed(2)}`, "가격"]} /><Area type="linear" dataKey="price" stroke="#8bd2bf" strokeWidth={2} fill="url(#priceFill)" animationDuration={0} /></AreaChart></ResponsiveContainer></div>;
+}

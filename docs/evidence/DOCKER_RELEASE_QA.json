@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "scope": "New public build and previously empty independent volumes",
+  "Python_dependency_install": "PASS: no-cache pip install requirements.lock",
+  "Node_dependency_install": "PASS: no-cache npm ci",
+  "Docker_production_build": "PASS",
+  "migration": "0001 head",
+  "synthetic_seed_N": 10000,
+  "healthy_services": [
+    {
+      "service": "backend",
+      "health": "healthy",
+      "state": "running"
+    },
+    {
+      "service": "celery-beat",
+      "health": "healthy",
+      "state": "running"
+    },
+    {
+      "service": "celery-worker",
+      "health": "healthy",
+      "state": "running"
+    },
+    {
+      "service": "frontend",
+      "health": "healthy",
+      "state": "running"
+    },
+    {
+      "service": "postgres",
+      "health": "healthy",
+      "state": "running"
+    },
+    {
+      "service": "redis",
+      "health": "healthy",
+      "state": "running"
+    }
+  ],
+  "URL_checks": {
+    "frontend": 200,
+    "swagger": 200,
+    "ready": 200
+  },
+  "API_operations": 23,
+  "image_checks": {
+    "backend": {
+      "image_id": "sha256:a69b0314cbaa80a71673b2721e030d7d29749747d62116d3a0d0c44d9efa706b",
+      "public_context": "backend",
+      "private_mounts": 0
+    },
+    "frontend": {
+      "image_id": "sha256:1d2d30e7cee580e08bea931ff83101af29f7739c521042aa9421783d9e776745",
+      "public_context": "frontend",
+      "private_mounts": 0
+    }
+  },
+  "backend_image_content": {
+    "private_engine_exists": false,
+    "environment_file_exists": false,
+    "provider": "synthetic-fixture-v1"
+  },
+  "services_left_running": true
+}

@@ -1,0 +1,19 @@
+{
+  "status": "PASS_CONFIGURATION_ONLY",
+  "YAML_parse": "PASS",
+  "jobs": [
+    "public-safety",
+    "backend",
+    "frontend",
+    "docker-e2e"
+  ],
+  "pinned_Gitleaks": "8.30.1 official SHA256 verified",
+  "guards": [
+    "Reviewed-file allowlist",
+    "Private prediction dependency/file guard",
+    "Gitleaks full-public-history scan",
+    "Five guard regression tests"
+  ],
+  "local_equivalent_application_tests": "PASS",
+  "actual_remote_GitHub_Actions": "NOT_RUN"
+}

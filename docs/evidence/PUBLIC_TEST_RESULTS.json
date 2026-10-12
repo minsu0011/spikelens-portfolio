@@ -1,0 +1,38 @@
+{
+  "utc": "2026-10-12T19:27:29.219097+00:00",
+  "scope": "Fresh public snapshot with data-quality/fixture provider; newly executed checks, original results not reused",
+  "backend": {
+    "unit_passed": 26,
+    "integration_passed": 18,
+    "total_passed": 44,
+    "failed": 0,
+    "skipped": 0,
+    "Ruff": "PASS"
+  },
+  "frontend": {
+    "npm_ci": "PASS: fresh public directory and no-cache Docker build",
+    "audit_vulnerabilities": 0,
+    "typecheck": "PASS",
+    "ESLint": "PASS",
+    "production_build": "PASS: fresh public Docker image",
+    "Playwright_Edge_passed": 4,
+    "Playwright_failed": 0,
+    "Playwright_seconds": 8.9,
+    "scenarios": [
+      "Real10000events",
+      "register/login/CSV/Celery/results/logout",
+      "empty/error/mobile390px",
+      "actual2000rows/SSEabort/polling"
+    ]
+  },
+  "publication_guard_tests": {
+    "passed": 5,
+    "failed": 0
+  },
+  "initial_failures_resolved": [
+    "First no-cache npm fetch hit ECONNRESET; retry succeeded",
+    "Four replaced-import order lint findings corrected; final image and full suite rerun"
+  ],
+  "remote_CI": "NOT_RUN",
+  "cloud_deployment": "NOT_RUN"
+}

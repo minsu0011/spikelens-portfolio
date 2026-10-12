@@ -1,0 +1,15 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Activity, Database, Layers3, Radio } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+import type { Summary } from "@/lib/types";
+import { number } from "@/lib/format";
+import { DailyChart } from "@/components/charts";
+import { ErrorState, Loading } from "@/components/ui";
+
+export default function LandingPage() {
+  const summary = useQuery({ queryKey: ["summary"], queryFn: () => api<Summary>("/analytics/summary") });
+  return <div className="landing"><section className="hero"><div className="hero-copy"><div className="eyebrow"><span className="dot" />FROM EVENT TO UNDERSTANDING</div><h1>Make every<br />event <em>visible.</em></h1><p>이벤트를 탐색하고, 데이터를 올리고, 분석의 흐름을 확인하세요. 하나의 워크스페이스에서 연결되는 이벤트 인텔리전스.</p><div className="hero-actions"><Link href="/dashboard" className="button primary">워크스페이스 둘러보기<ArrowRight size={17} /></Link><Link href="/register" className="button secondary">계정 만들기<ArrowUpRight size={16} /></Link></div><div className="hero-footnote"><Database size={14} />독립적인 코드와 합성 데이터로 만든 백엔드 포트폴리오</div></div><div className="hero-preview"><div className="preview-bar"><span className="preview-dots"><i /><i /><i /></span><span>spikelens / event overview</span><span className="dot" /></div><div className="preview-content"><div className="eyebrow">EVENT ACTIVITY</div><div className="preview-value">{summary.data ? number(summary.data.total_events) : "—"}<span>synthetic events</span></div>{summary.isPending ? <Loading /> : summary.error ? <ErrorState error={summary.error} retry={() => { void summary.refetch(); }} /> : summary.data && <DailyChart data={summary.data.daily_counts} />}<div className="preview-bottom"><span>PostgreSQL → FastAPI → Next.js</span><span className="demo-badge">SYNTHETIC DATA</span></div></div></div></section><section className="landing-intro"><div><div className="eyebrow">A CONNECTED WORKFLOW</div><h2>데이터가 들어오는 순간부터,<br />결과를 이해하는 순간까지.</h2></div><p>실제 데이터베이스, API, 백그라운드 워커로 이어지는 전체 경로를 경험하세요. 모든 진행률과 결과는 서버가 기록한 상태를 보여줍니다.</p></section><div className="feature-grid"><div className="feature-card"><Activity /><span className="feature-number">01 / EXPLORE</span><h3>이벤트의 맥락을 읽다</h3><p>종목, 거래 세션, 시각으로 탐색하고 합성 가격 경로와 데모 지표를 확인합니다.</p><Link href="/events">이벤트 탐색<ArrowRight size={15} /></Link></div><div className="feature-card"><Layers3 /><span className="feature-number">02 / ANALYZE</span><h3>분석을 워커에게 맡기다</h3><p>CSV 검증부터 중복 방지, 큐 등록, 결과 저장까지 이어지는 비동기 분석.</p><Link href="/upload">데이터 업로드<ArrowRight size={15} /></Link></div><div className="feature-card"><Radio /><span className="feature-number">03 / OBSERVE</span><h3>진행 과정을 놓치지 않다</h3><p>실제 작업 상태를 실시간으로 확인하고, 완료된 결과와 실패 사유를 조회합니다.</p><Link href="/jobs">작업 내역<ArrowRight size={15} /></Link></div></div><div className="demo-disclaimer"><strong>명확한 출처, 분명한 범위.</strong><p>공개 데모 이벤트는 모두 합성 데이터입니다. 분석 점수는 독립적인 데모 합성 fixture으로 계산되며 실전 연구 모델의 예측, 투자 추천 또는 수익률을 의미하지 않습니다.</p></div></div>;
+}

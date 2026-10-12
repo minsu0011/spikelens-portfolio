@@ -1,0 +1,55 @@
+{
+  "utc": "2026-10-12T19:24:34.266685+00:00",
+  "scope": "Actual public snapshot services only; unrelated services not stopped",
+  "checks": {
+    "auth_CRUD_admin": "PASS: register/logout/login, create/read/update/delete, role403 then localCLI promotion200",
+    "actual_redis_stop": {
+      "ready": 503,
+      "summary_DB_fallback": 200,
+      "durable_queued_job": true,
+      "enqueue_seconds": 0.12575809998088516
+    },
+    "redis_recovery": {
+      "status": "SUCCEEDED",
+      "stored_result_rows": 30,
+      "stored_progress_observed": [
+        0.0,
+        100.0
+      ],
+      "fixture_only": true
+    },
+    "actual_worker_stop": {
+      "status": "QUEUED",
+      "processed_rows": 0
+    },
+    "worker_recovery": {
+      "status": "SUCCEEDED",
+      "stored_result_rows": 2000,
+      "stored_progress_observed": [
+        0.0,
+        5.0,
+        15.0,
+        20.0,
+        30.0,
+        35.0,
+        45.0,
+        50.0,
+        60.0,
+        65.0,
+        75.0,
+        80.0,
+        90.0,
+        95.0,
+        100.0
+      ],
+      "fixture_only": true
+    },
+    "actual_postgres_stop": {
+      "live": 200,
+      "ready": 503,
+      "events": 503
+    },
+    "postgres_recovery": "PASS"
+  },
+  "status": "PASS"
+}

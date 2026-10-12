@@ -1,0 +1,146 @@
+name: spikelens-public
+
+x-backend-env: &backend-env
+  APP_ENV: ${APP_ENV:-development}
+  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-spikelens}:${POSTGRES_PASSWORD:?Create a project-local .env first}@postgres:5432/${POSTGRES_DB:-spikelens}
+  REDIS_URL: redis://redis:6379/0
+  UPLOAD_DIR: /data/uploads
+  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3200,http://127.0.0.1:3200}
+  COOKIE_SECURE: ${COOKIE_SECURE:-false}
+  SESSION_TTL_SECONDS: ${SESSION_TTL_SECONDS:-86400}
+  MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-10485760}
+  MAX_UPLOAD_ROWS: ${MAX_UPLOAD_ROWS:-20000}
+  JOB_LEASE_SECONDS: ${JOB_LEASE_SECONDS:-120}
+  MAX_JOB_ATTEMPTS: ${MAX_JOB_ATTEMPTS:-3}
+  SUMMARY_CACHE_TTL: ${SUMMARY_CACHE_TTL:-60}
+  PYTHONUNBUFFERED: "1"
+
+services:
+  postgres:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-spikelens}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Create a project-local .env first}
+      POSTGRES_DB: ${POSTGRES_DB:-spikelens}
+    ports:
+      - "127.0.0.1:55440:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+    logging: &local-logs
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:7.4-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    ports:
+      - "127.0.0.1:56380:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    logging: *local-logs
+
+  backend:
+    build:
+      context: ./backend
+    image: spikelens-public-backend:local
+    environment: *backend-env
+    command: ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8100"]
+    ports:
+      - "127.0.0.1:8200:8100"
+    volumes:
+      - upload-data:/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/api/v1/health/ready', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+    restart: unless-stopped
+    logging: *local-logs
+
+  celery-worker:
+    build:
+      context: ./backend
+    image: spikelens-public-backend:local
+    environment: *backend-env
+    command: ["celery", "-A", "app.tasks.celery_app:celery_app", "worker", "--queues=spikelens", "--loglevel=INFO", "--concurrency=2"]
+    volumes:
+      - upload-data:/data/uploads
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.tasks.celery_app:celery_app inspect ping --destination celery@$$HOSTNAME --timeout 5 | grep -q pong"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 25s
+    stop_grace_period: 45s
+    restart: unless-stopped
+    logging: *local-logs
+
+  celery-beat:
+    image: spikelens-public-backend:local
+    environment: *backend-env
+    command: ["celery", "-A", "app.tasks.celery_app:celery_app", "beat", "--loglevel=INFO", "--schedule=/tmp/spikelens-celerybeat", "--pidfile=/tmp/spikelens-celerybeat.pid"]
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,pathlib; os.kill(int(pathlib.Path('/tmp/spikelens-celerybeat.pid').read_text()), 0)"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    logging: *local-logs
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BACKEND_INTERNAL_URL: http://backend:8100
+    image: spikelens-public-frontend:local
+    environment:
+      BACKEND_INTERNAL_URL: http://backend:8100
+      NODE_ENV: production
+      PORT: "3100"
+      HOSTNAME: "0.0.0.0"
+    ports:
+      - "127.0.0.1:3200:3100"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3100').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+    restart: unless-stopped
+    logging: *local-logs
+
+volumes:
+  postgres-data:
+  redis-data:
+  upload-data:

@@ -1,0 +1,11 @@
+{
+  "generator": "backend/app/db/seed.py:synthetic_events",
+  "recipe": "spikelens-synthetic-v1",
+  "seed": 271013,
+  "synthetic": true,
+  "source_research_assets_used": 0,
+  "files": {
+    "events-small.csv": 30,
+    "events-progress.csv": 2000
+  }
+}

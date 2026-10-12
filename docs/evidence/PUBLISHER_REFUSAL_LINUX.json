@@ -1,0 +1,15 @@
+{
+  "fault": "actual local TCP connection refusal, no send_task mock",
+  "api_create_seconds": 0.011108541000794503,
+  "dispatch_seconds": [
+    0.011108541000794503,
+    0.002425649001452257,
+    0.0023486530008085538,
+    0.00205947699942044,
+    0.0021144620004633907
+  ],
+  "api_retry_seconds": 0.00824711300083436,
+  "asserted_each_less_than_seconds": 5,
+  "dispatch_exhaustion": 5,
+  "worker_startup_retry_unchanged": true
+}

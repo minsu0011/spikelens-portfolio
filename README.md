@@ -40,3 +40,5 @@ docker compose exec -T backend python -m app.db.seed --count 10000
 ![대시보드](docs/evidence/ui-overview.png)
 
 ![작업 결과](docs/evidence/ui-analysis-results.png)
+
+[전체 문서 안내](docs/README.md)

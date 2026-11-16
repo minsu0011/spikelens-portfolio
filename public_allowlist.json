@@ -53,6 +53,7 @@
     "backend/tests/test_publisher_integration.py",
     "backend/tests/test_unit.py",
     "docker-compose.yml",
+    "docs/README.md",
     "docs/adr/README.md",
     "docs/api/openapi.json",
     "docs/architecture/API_DESIGN.md",

@@ -8,4 +8,4 @@ Argon2id로 비밀번호를 hash하고 opaque 세션 토큰의 SHA256 digest만 
 
 새 공개 Git history, 명시적 allowlist, AST 의존성/파일 유형/개인 경로 검사와 독립 Gitleaks 검사를 사용한다. ORM tables는 허용하며 예측 dependency·모델 binary·실제 .env는 거부한다. 이미지도 별도 실제 화면·metadata 검토를 한다. 패턴 검사만으로 모든 유출 가능성을 보장하지 않는다.
 
-현재는 loopback HTTP 개발 환경이다. 운영에는 HTTPS/Secure cookie, 최소 DB 권한·Redis ACL, 비밀값 관리, 이메일/비밀번호 복구, 저장소 보존·백업 복원·감사·경보와 quota 검증이 필요하다. 사용자 승인 없이 공개 push나 cloud 배포하지 않는다.
+현재는 loopback HTTP 개발 환경이다. 운영에는 HTTPS/Secure cookie, 최소 DB 권한·Redis ACL, 비밀값 관리, 이메일/비밀번호 복구, 저장소 보존·백업 복원·감사·경보와 quota 검증이 필요하다. 운영 준비 항목은 [배포 안내](../deployment/README.md)에 정리한다.
